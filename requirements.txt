@@ -1,0 +1,7 @@
+﻿flask>=3.0
+imap-tools>=1.5
+joblib>=1.4
+numpy>=1.26
+pandas>=2.2
+python-dotenv>=1.0
+scikit-learn>=1.5

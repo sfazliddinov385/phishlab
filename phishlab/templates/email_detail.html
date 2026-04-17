@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}{{ email.subject }} - Phishlab{% endblock %}
+{% block content %}
+
+<p><a href="{{ url_for('index') }}">&larr; Back to queue</a></p>
+
+<h2>
+    {% if email.verdict == "phishing" %}
+        <span class="badge badge-phish">PHISHING</span>
+    {% else %}
+        <span class="badge badge-safe">SAFE</span>
+    {% endif %}
+    {{ email.subject }}
+</h2>
+
+<div class="meta">
+    <div class="meta-row"><div class="meta-label">Verdict</div><div>{{ email.verdict }}</div></div>
+    <div class="meta-row"><div class="meta-label">Confidence</div><div>{{ "%.4f"|format(email.confidence) }}</div></div>
+    <div class="meta-row"><div class="meta-label">Sender</div><div>{{ email.sender }}</div></div>
+    <div class="meta-row"><div class="meta-label">Date</div><div>{{ email.date }}</div></div>
+    <div class="meta-row"><div class="meta-label">Fetched</div><div>{{ email.fetched_at }}</div></div>
+    <div class="meta-row"><div class="meta-label">UID</div><div class="muted">{{ email.uid }}</div></div>
+</div>
+
+<h3>Analyst Review</h3>
+
+<div class="review-container">
+    {% if review %}
+        <div class="review-status">
+            {% if review.decision == "confirmed_phishing" %}
+                <span class="badge badge-phish">CONFIRMED PHISHING</span>
+            {% else %}
+                <span class="badge badge-safe">FALSE POSITIVE</span>
+            {% endif %}
+            <span class="muted">reviewed {{ review.reviewed_at }}</span>
+        </div>
+    {% else %}
+        <p class="muted">Not yet reviewed.</p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('submit_review', uid=email.uid) }}" class="review-form">
+        <button type="submit" name="decision" value="confirmed_phishing" class="btn btn-phish">
+            Confirm Phishing
+        </button>
+        <button type="submit" name="decision" value="false_positive" class="btn btn-safe">
+            Mark False Positive
+        </button>
+        {% if review %}
+        <button type="submit" name="decision" value="reset" class="btn btn-reset">
+            Reset Review
+        </button>
+        {% endif %}
+    </form>
+</div>
+
+<h3>Indicators of Compromise ({{ total_iocs }})</h3>
+
+{% if ioc_groups %}
+<div class="ioc-container">
+    {% for group in ioc_groups %}
+    <div class="ioc-group">
+        <h4>{{ group.label }} <span class="ioc-count">{{ group.count }}</span></h4>
+        <ul class="ioc-list">
+            {% for entry in group.entries %}
+            <li><code>{{ entry.value }}</code></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="muted">No IOCs extracted from this email.</p>
+{% endif %}
+
+<h3>Body</h3>
+<pre>{{ email.body }}</pre>
+
+{% endblock %}

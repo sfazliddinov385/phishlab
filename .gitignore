@@ -1,0 +1,27 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Credentials & secrets
+.env
+
+# Local Claude settings
+.claude/
+
+# Data & model artifacts (large files)
+data/*.csv
+model/artifacts/*.pkl
+model/artifacts/*.joblib
+
+# Database (contains live scan data)
+phishlab.db
+*.db
+
+# OS
+.DS_Store
+Thumbs.db

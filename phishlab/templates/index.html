@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Triage Queue - Phishlab{% endblock %}
+{% block content %}
+
+<div class="stats-row">
+    <div class="stats-label">Model Verdicts</div>
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-label">Total Triaged</div>
+            <div class="stat-value">{{ total }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Phishing</div>
+            <div class="stat-value" style="color: #991b1b;">{{ model_phish }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Safe</div>
+            <div class="stat-value" style="color: #065f46;">{{ model_safe }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">IOCs Extracted</div>
+            <div class="stat-value" style="color: #4b5563;">{{ total_iocs }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-row">
+    <div class="stats-label">Analyst Reviews</div>
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-label">Confirmed Phishing</div>
+            <div class="stat-value" style="color: #991b1b;">{{ confirmed_phish }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">False Positives</div>
+            <div class="stat-value" style="color: #065f46;">{{ false_positives }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Model Disagreements</div>
+            <div class="stat-value" style="color: #b45309;">{{ disagreements }}</div>
+        </div>
+    </div>
+</div>
+
+<h2>Triage Queue</h2>
+
+{% if rows %}
+<table>
+    <thead>
+        <tr>
+            <th>Verdict</th>
+            <th>Confidence</th>
+            <th>IOCs</th>
+            <th>Review</th>
+            <th>Sender</th>
+            <th>Subject</th>
+            <th>Fetched</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            <td>
+                {% if row.verdict == "phishing" %}
+                    <span class="badge badge-phish">PHISHING</span>
+                {% else %}
+                    <span class="badge badge-safe">SAFE</span>
+                {% endif %}
+            </td>
+            <td>{{ "%.3f"|format(row.confidence) }}</td>
+            <td>{{ row.ioc_count }}</td>
+            <td>
+                {% if row.review == "confirmed_phishing" %}
+                    <span class="badge badge-phish">CONFIRMED</span>
+                {% elif row.review == "false_positive" %}
+                    <span class="badge badge-safe">FALSE POS</span>
+                {% else %}
+                    <span class="muted">—</span>
+                {% endif %}
+            </td>
+            <td>{{ row.sender }}</td>
+            <td><a href="{{ url_for('email_detail', uid=row.uid) }}">{{ row.subject }}</a></td>
+            <td class="muted">{{ row.fetched_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="muted">No emails triaged yet. Run <code>python -m phishlab.poller</code> to fetch some.</p>
+{% endif %}
+
+{% endblock %}
