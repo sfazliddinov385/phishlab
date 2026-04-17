@@ -239,11 +239,5 @@ This is why real email security has many layers. The dashboard shows this honest
 
 ---
 
-## What's next
 
-- [ ] URL classifier model (separate model just for URLs)
-- [ ] Retraining script that uses analyst reviews
-- [ ] Parse SPF/DKIM/DMARC headers
-- [ ] Export alerts to a Wazuh/Splunk log file
-- [ ] Docker setup
 
