@@ -1,6 +1,6 @@
 """
 Diagnostic: examine what the v1 model actually learned.
-We want to see if top features are real phishing signals or dataset artifacts.
+I want to see if top features are real phishing signals or dataset artifacts.
 """
 import joblib
 import pandas as pd
