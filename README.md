@@ -148,7 +148,7 @@ I lost 1% accuracy. But the model now learns real phishing patterns, not a speci
 
 ### Setup
 
-    git clone https://github.com/YOUR_USERNAME/phishlab.git
+    git clone https://github.com/sfazliddinov385/phishlab.git
     cd phishlab
 
     # Make a virtual environment
